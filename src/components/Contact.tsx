@@ -14,7 +14,7 @@ export default function Contact() {
   const [ref, inView] = useInView<HTMLElement>({ threshold: 0.15 })
 
   return (
-    <footer id="contact" ref={ref} className="relative overflow-hidden px-5 pt-28 md:px-10 md:pt-40">
+    <footer id="contact" ref={ref} className="relative overflow-hidden px-5 pt-20 md:px-10 md:pt-28">
       <div className="mx-auto max-w-[1400px]">
         <div className="mb-10 flex items-baseline gap-4">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">(04)</span>

@@ -191,7 +191,7 @@ export default function Projects() {
   const [hovered, setHovered] = useState<number | null>(null)
 
   return (
-    <section id="projects" ref={ref} className="relative px-5 py-28 md:px-10 md:py-40">
+    <section id="projects" ref={ref} className="relative px-5 py-20 md:px-10 md:py-28">
       <div className="mx-auto max-w-[1400px]">
         <div className="mb-12 flex items-baseline gap-4">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">(02)</span>
