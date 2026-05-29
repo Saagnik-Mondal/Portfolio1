@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #C7C6CF #F1F0EC;
+  }
+
+  html::-webkit-scrollbar {
+    width: 8px;
+  }
+  html::-webkit-scrollbar-track {
+    background: #F1F0EC;
+  }
+  html::-webkit-scrollbar-thumb {
+    background: #C7C6CF;
+    border-radius: 4px;
+  }
+
+  body {
+    background-color: #FAF9F6;
+    color: #16151C;
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Hide native cursor when custom cursor active (fine pointers only) */
+  @media (pointer: fine) {
+    html.has-custom-cursor,
+    html.has-custom-cursor a,
+    html.has-custom-cursor button {
+      cursor: none;
+    }
+  }
+
+  ::selection {
+    background: rgba(79, 70, 229, 0.18);
+    color: #16151C;
+  }
+}
+
+@layer utilities {
+  /* Solid accent fill (formerly the rainbow wheel) */
+  .wheel-bg {
+    background: linear-gradient(135deg, #4F46E5, #6366F1);
+  }
+
+  /* Accent-colored text (no rainbow) */
+  .spectrum-text {
+    color: #4F46E5;
+  }
+
+  .spectrum-border {
+    border: 1px solid rgba(22, 21, 28, 0.12);
+  }
+
+  /* Clean card surface */
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    border: 1px solid rgba(22, 21, 28, 0.07);
+  }
+
+  .glass-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(22, 21, 28, 0.07);
+    box-shadow: 0 1px 2px rgba(22, 21, 28, 0.04), 0 8px 24px -16px rgba(22, 21, 28, 0.12);
+    transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+  }
+}
