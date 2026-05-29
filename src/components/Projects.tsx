@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from '../hooks/useInView'
 import { projects } from '../data/portfolio'
 import { RevealLine } from './Reveal'
@@ -8,138 +8,82 @@ type Project = typeof projects[0]
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
-/** Cursor-following preview card shown while hovering a project row (desktop). */
-function HoverPreview({
-  project,
-  x,
-  y,
-}: {
-  project: Project | null
-  x: ReturnType<typeof useMotionValue<number>>
-  y: ReturnType<typeof useMotionValue<number>>
-}) {
-  return (
-    <motion.div
-      className="pointer-events-none fixed left-0 top-0 z-[90] hidden md:block"
-      style={{ x, y }}
-    >
-      <AnimatePresence>
-        {project && (
-          <motion.div
-            key={project.id}
-            initial={{ opacity: 0, scale: 0.85, rotate: -8 }}
-            animate={{ opacity: 1, scale: 1, rotate: -5 }}
-            exit={{ opacity: 0, scale: 0.85, rotate: -8 }}
-            transition={{ duration: 0.32, ease: EASE }}
-            className="-translate-x-1/2 -translate-y-1/2 w-[290px] overflow-hidden rounded-2xl border border-ink/10 shadow-2xl"
-          >
-            <div
-              className="relative flex h-40 items-end p-5"
-              style={{ background: `linear-gradient(135deg, ${project.categoryColor}, #3A2BFF)` }}
-            >
-              <span className="display absolute right-3 top-1 text-[5rem] leading-none text-white/20">
-                {String(projects.indexOf(project) + 1).padStart(2, '0')}
-              </span>
-              <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/90">
-                {project.category}
-              </span>
-            </div>
-            <div className="bg-paper px-5 py-4">
-              <p className="display text-lg leading-tight text-ink">{project.title}</p>
-              <p className="mt-1 font-mono text-[11px] text-ink-faint">
-                {project.year} · {project.tech.length} technologies
-                {project.stars > 0 ? ` · ${project.stars}★` : ''}
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  )
-}
+/** Resting tilt per card, so the board reads like pinned sticky notes. */
+const TILT = [-2.6, 1.8, -1.6, 2.4]
 
-function ProjectRow({
+function StickyNote({
   project,
   index,
   onOpen,
-  hovered,
-  setHovered,
 }: {
   project: Project
   index: number
   onOpen: () => void
-  hovered: number | null
-  setHovered: (i: number | null) => void
 }) {
-  const isHovered = hovered === index
-  const dim = hovered !== null && !isHovered
-
+  const rot = TILT[index % TILT.length]
   return (
     <motion.button
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-10% 0px' }}
-      transition={{ duration: 0.7, delay: index * 0.06, ease: EASE }}
       onClick={onOpen}
-      onMouseEnter={() => setHovered(index)}
-      onMouseLeave={() => setHovered(null)}
       data-cursor-label="Open"
-      className="group relative block w-full border-t border-ink/12 py-7 text-left transition-opacity duration-300 last:border-b"
-      style={{ opacity: dim ? 0.4 : 1 }}
+      initial={{ opacity: 0, y: 36, rotate: rot }}
+      whileInView={{ opacity: 1, y: 0, rotate: rot }}
+      whileHover={{ rotate: 0, y: -10, scale: 1.025 }}
+      viewport={{ once: true, margin: '-8% 0px' }}
+      transition={{ duration: 0.55, delay: index * 0.07, ease: EASE }}
+      className="group relative flex min-h-[300px] flex-col rounded-xl bg-[#FBF9F3] p-6 text-left shadow-[0_14px_34px_-16px_rgba(21,19,15,0.4)] ring-1 ring-ink/5 transition-shadow duration-300 hover:shadow-[0_26px_50px_-18px_rgba(21,19,15,0.5)] md:p-7"
     >
-      <div className="flex items-center gap-5 md:gap-8">
-        <span className="w-10 shrink-0 font-mono text-sm text-ink-faint">
+      {/* tape strip */}
+      <span
+        className="absolute -top-3 left-1/2 h-6 w-28 -translate-x-1/2 -rotate-2 rounded-[2px] backdrop-blur-sm"
+        style={{ background: `${project.categoryColor}38`, boxShadow: `inset 0 0 0 1px ${project.categoryColor}55` }}
+      />
+
+      {/* meta row */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+            {project.category}
+          </span>
+          <span className="font-mono text-[11px] text-ink-faint">· {project.year}</span>
+        </div>
+        <span className="display text-2xl leading-none text-ink/12">
           {String(index + 1).padStart(2, '0')}
         </span>
+      </div>
 
-        <div className="min-w-0 flex-1">
-          <div className="mb-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent">
-              {project.category}
-            </span>
-            <span className="font-mono text-[11px] text-ink-faint">· {project.year}</span>
-            {project.featured && (
-              <span className="rounded-full bg-accent-tint px-2 py-0.5 text-[10px] font-semibold text-accent">
-                Featured
-              </span>
-            )}
-            {project.stars > 0 && (
-              <span className="flex items-center gap-1 text-[11px] font-semibold text-ink-soft">
-                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-                {project.stars}
-              </span>
-            )}
-          </div>
+      {/* title */}
+      <h3 className="display mt-4 text-[clamp(1.5rem,2.6vw,2.1rem)] leading-[0.98] text-ink transition-colors duration-300 group-hover:text-accent">
+        {project.title}
+      </h3>
 
-          <h3
-            className="display text-[clamp(1.6rem,4.5vw,3.4rem)] leading-[0.95] text-ink transition-transform duration-500 group-hover:translate-x-2"
-            style={{ color: isHovered ? '#3A2BFF' : undefined }}
-          >
-            {project.title}
-          </h3>
+      {/* note body */}
+      <p className="mt-3 line-clamp-3 text-[14px] leading-relaxed text-ink-soft">
+        {project.description}
+      </p>
 
-          <div className="mt-2 hidden flex-wrap items-center gap-x-2 md:flex">
-            {project.tech.slice(0, 5).map((t, i) => (
-              <span key={t} className="flex items-center gap-x-2 font-mono text-[11px] text-ink-soft">
-                {i > 0 && <span className="text-ink-faint">/</span>}
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <motion.span
-          animate={{ rotate: isHovered ? 0 : -45, scale: isHovered ? 1 : 0.85 }}
-          transition={{ duration: 0.4, ease: EASE }}
-          className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-full border border-ink/15 text-ink md:flex"
-          style={{ background: isHovered ? '#3A2BFF' : 'transparent', borderColor: isHovered ? '#3A2BFF' : undefined, color: isHovered ? '#fff' : undefined }}
-        >
-          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      {/* footer */}
+      <div className="mt-auto flex items-center justify-between gap-3 pt-6">
+        <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-ink transition-colors group-hover:text-accent">
+          Read case study
+          <svg className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M7 17L17 7M17 7H7m10 0v10" />
           </svg>
-        </motion.span>
+        </span>
+        <div className="flex items-center gap-2">
+          {project.featured && (
+            <span className="rounded-full bg-accent-tint px-2 py-0.5 text-[10px] font-semibold text-accent">
+              Featured
+            </span>
+          )}
+          {project.stars > 0 && (
+            <span className="flex items-center gap-1 text-[11px] font-semibold text-ink-soft">
+              <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              {project.stars}
+            </span>
+          )}
+        </div>
       </div>
     </motion.button>
   )
@@ -238,16 +182,6 @@ function CaseStudy({ project, onClose }: { project: Project; onClose: () => void
 export default function Projects() {
   const [ref, inView] = useInView<HTMLElement>({ threshold: 0.04 })
   const [active, setActive] = useState<Project | null>(null)
-  const [hovered, setHovered] = useState<number | null>(null)
-
-  const mx = useMotionValue(0)
-  const my = useMotionValue(0)
-  const x = useSpring(mx, { stiffness: 320, damping: 28, mass: 0.5 })
-  const y = useSpring(my, { stiffness: 320, damping: 28, mass: 0.5 })
-  const onMove = (e: React.MouseEvent) => {
-    mx.set(e.clientX)
-    my.set(e.clientY)
-  }
 
   return (
     <section id="projects" ref={ref} className="relative px-5 py-16 md:px-10 md:py-24">
@@ -261,20 +195,14 @@ export default function Projects() {
           <RevealLine>Things I've</RevealLine>
           <RevealLine delay={0.08}><span className="text-gradient">built.</span></RevealLine>
         </h2>
-        <p className="mb-10 max-w-md text-ink-soft">
-          Click any project to read the full case study — the problem, my approach, and what shipped.
+        <p className="mb-12 max-w-md text-ink-soft">
+          Pinned notes from the lab — tap any to read the full case study: the problem, my
+          approach, and what shipped.
         </p>
 
-        <div onMouseLeave={() => setHovered(null)} onMouseMove={onMove}>
+        <div className="grid gap-x-6 gap-y-8 sm:grid-cols-2">
           {projects.map((project, i) => (
-            <ProjectRow
-              key={project.id}
-              project={project}
-              index={i}
-              onOpen={() => setActive(project)}
-              hovered={hovered}
-              setHovered={setHovered}
-            />
+            <StickyNote key={project.id} project={project} index={i} onOpen={() => setActive(project)} />
           ))}
         </div>
 
@@ -286,7 +214,7 @@ export default function Projects() {
           target="_blank"
           rel="noopener noreferrer"
           data-cursor="hover"
-          className="mt-10 inline-flex items-center gap-2 font-semibold text-ink-soft transition-colors hover:text-accent"
+          className="mt-12 inline-flex items-center gap-2 font-semibold text-ink-soft transition-colors hover:text-accent"
         >
           See all 21 repositories on GitHub
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -294,8 +222,6 @@ export default function Projects() {
           </svg>
         </motion.a>
       </div>
-
-      <HoverPreview project={hovered !== null ? projects[hovered] : null} x={x} y={y} />
 
       <AnimatePresence>
         {active && <CaseStudy project={active} onClose={() => setActive(null)} />}
