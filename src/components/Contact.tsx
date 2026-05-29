@@ -47,8 +47,8 @@ export default function Contact() {
           </Magnetic>
         </div>
 
-        {/* social links */}
-        <div className="mt-16 grid gap-px overflow-hidden rounded-3xl border border-ink/10 bg-ink/10 sm:grid-cols-3">
+        {/* social links — interactive rows */}
+        <div className="mt-16 border-t border-ink/12">
           {socials.map((s, i) => (
             <motion.a
               key={s.name}
@@ -56,18 +56,24 @@ export default function Contact() {
               target={s.name !== 'Email' ? '_blank' : undefined}
               rel={s.name !== 'Email' ? 'noopener noreferrer' : undefined}
               data-cursor="hover"
-              initial={{ opacity: 0 }}
-              animate={inView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="group flex items-center justify-between bg-paper p-6 transition-colors hover:bg-paper-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="group flex items-center justify-between gap-6 border-b border-ink/12 py-6 md:py-8"
             >
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-ink-faint">{s.name}</p>
-                <p className="mt-1 font-medium text-ink transition-colors group-hover:text-accent">{s.handle}</p>
+              <div className="flex min-w-0 items-baseline gap-4 md:gap-7">
+                <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-faint">
+                  {s.name}
+                </span>
+                <span className="display truncate text-[clamp(1.5rem,4vw,3rem)] leading-[0.95] text-ink transition-all duration-300 group-hover:translate-x-2 group-hover:text-accent">
+                  {s.handle}
+                </span>
               </div>
-              <svg className="h-4 w-4 text-ink-faint transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M7 17L17 7M17 7H7m10 0v10" />
-              </svg>
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-ink/15 text-ink transition-colors duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-paper">
+                <svg className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M7 17L17 7M17 7H7m10 0v10" />
+                </svg>
+              </span>
             </motion.a>
           ))}
         </div>

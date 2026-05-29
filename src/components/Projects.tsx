@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion'
 import { useInView } from '../hooks/useInView'
 import { projects } from '../data/portfolio'
 import { RevealLine } from './Reveal'
@@ -7,6 +7,56 @@ import { RevealLine } from './Reveal'
 type Project = typeof projects[0]
 
 const EASE = [0.22, 1, 0.36, 1] as const
+
+/** Cursor-following preview card shown while hovering a project row (desktop). */
+function HoverPreview({
+  project,
+  x,
+  y,
+}: {
+  project: Project | null
+  x: ReturnType<typeof useMotionValue<number>>
+  y: ReturnType<typeof useMotionValue<number>>
+}) {
+  return (
+    <motion.div
+      className="pointer-events-none fixed left-0 top-0 z-[90] hidden md:block"
+      style={{ x, y }}
+    >
+      <AnimatePresence>
+        {project && (
+          <motion.div
+            key={project.id}
+            initial={{ opacity: 0, scale: 0.85, rotate: -8 }}
+            animate={{ opacity: 1, scale: 1, rotate: -5 }}
+            exit={{ opacity: 0, scale: 0.85, rotate: -8 }}
+            transition={{ duration: 0.32, ease: EASE }}
+            className="-translate-x-1/2 -translate-y-1/2 w-[290px] overflow-hidden rounded-2xl border border-ink/10 shadow-2xl"
+          >
+            <div
+              className="relative flex h-40 items-end p-5"
+              style={{ background: `linear-gradient(135deg, ${project.categoryColor}, #3A2BFF)` }}
+            >
+              <span className="display absolute right-3 top-1 text-[5rem] leading-none text-white/20">
+                {String(projects.indexOf(project) + 1).padStart(2, '0')}
+              </span>
+              <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/90">
+                {project.category}
+              </span>
+            </div>
+            <div className="bg-paper px-5 py-4">
+              <p className="display text-lg leading-tight text-ink">{project.title}</p>
+              <p className="mt-1 font-mono text-[11px] text-ink-faint">
+                {project.year} · {project.tech.length} technologies
+                {project.stars > 0 ? ` · ${project.stars}★` : ''}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
 
 function ProjectRow({
   project,
@@ -190,6 +240,15 @@ export default function Projects() {
   const [active, setActive] = useState<Project | null>(null)
   const [hovered, setHovered] = useState<number | null>(null)
 
+  const mx = useMotionValue(0)
+  const my = useMotionValue(0)
+  const x = useSpring(mx, { stiffness: 320, damping: 28, mass: 0.5 })
+  const y = useSpring(my, { stiffness: 320, damping: 28, mass: 0.5 })
+  const onMove = (e: React.MouseEvent) => {
+    mx.set(e.clientX)
+    my.set(e.clientY)
+  }
+
   return (
     <section id="projects" ref={ref} className="relative px-5 py-16 md:px-10 md:py-24">
       <div className="mx-auto max-w-[1400px]">
@@ -206,7 +265,7 @@ export default function Projects() {
           Click any project to read the full case study — the problem, my approach, and what shipped.
         </p>
 
-        <div onMouseLeave={() => setHovered(null)}>
+        <div onMouseLeave={() => setHovered(null)} onMouseMove={onMove}>
           {projects.map((project, i) => (
             <ProjectRow
               key={project.id}
@@ -235,6 +294,8 @@ export default function Projects() {
           </svg>
         </motion.a>
       </div>
+
+      <HoverPreview project={hovered !== null ? projects[hovered] : null} x={x} y={y} />
 
       <AnimatePresence>
         {active && <CaseStudy project={active} onClose={() => setActive(null)} />}
