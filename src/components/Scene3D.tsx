@@ -65,7 +65,7 @@ export default function Scene3D() {
   if (reduce) return null
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-0">
+    <div className="h-full w-full">
       <Canvas
         camera={{ position: [0, 0, 4.6], fov: 50 }}
         gl={{ alpha: true, antialias: true }}

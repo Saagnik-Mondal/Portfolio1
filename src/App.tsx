@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
+import { AnimatePresence, motion, useScroll, useSpring, useTransform } from 'framer-motion'
 import { SmoothScrollProvider } from './lib/smooth-scroll'
 import Loader from './components/Loader'
 import Cursor from './components/Cursor'
@@ -22,6 +22,19 @@ function ScrollProgress() {
   )
 }
 
+/** The WebGL orb lives behind the hero, then fades as you scroll past it so
+ *  the sections below sit clean on the paper canvas. */
+function OrbLayer() {
+  const { scrollY } = useScroll()
+  const vh = typeof window !== 'undefined' ? window.innerHeight : 800
+  const opacity = useTransform(scrollY, [0, vh * 0.85], [1, 0])
+  return (
+    <motion.div style={{ opacity }} className="pointer-events-none fixed inset-0 z-0">
+      <Scene3D />
+    </motion.div>
+  )
+}
+
 export default function App() {
   const [loaded, setLoaded] = useState(false)
 
@@ -37,7 +50,7 @@ export default function App() {
 
       <SmoothScrollProvider>
         <div className="relative min-h-screen">
-          <Scene3D />
+          <OrbLayer />
           <Navbar />
           <main className="relative z-[2]">
             <Hero />
