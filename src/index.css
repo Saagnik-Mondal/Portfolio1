@@ -11,70 +11,123 @@
 
   html {
     scrollbar-width: thin;
-    scrollbar-color: #C7C6CF #F1F0EC;
+    scrollbar-color: #C3BCA9 #E8E3D7;
   }
 
   html::-webkit-scrollbar {
-    width: 8px;
+    width: 9px;
   }
   html::-webkit-scrollbar-track {
-    background: #F1F0EC;
+    background: #E8E3D7;
   }
   html::-webkit-scrollbar-thumb {
-    background: #C7C6CF;
-    border-radius: 4px;
+    background: #C3BCA9;
+    border-radius: 6px;
   }
 
   body {
-    background-color: #FAF9F6;
-    color: #16151C;
+    background-color: #F2EEE6;
+    color: #15130F;
     font-family: 'Inter', system-ui, sans-serif;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   /* Hide native cursor when custom cursor active (fine pointers only) */
   @media (pointer: fine) {
     html.has-custom-cursor,
-    html.has-custom-cursor a,
-    html.has-custom-cursor button {
-      cursor: none;
+    html.has-custom-cursor * {
+      cursor: none !important;
     }
   }
 
   ::selection {
-    background: rgba(79, 70, 229, 0.18);
-    color: #16151C;
+    background: #15130F;
+    color: #F2EEE6;
   }
 }
 
 @layer utilities {
-  /* Solid accent fill (formerly the rainbow wheel) */
-  .wheel-bg {
-    background: linear-gradient(135deg, #4F46E5, #6366F1);
+  .font-display {
+    font-family: 'Bricolage Grotesque', Inter, system-ui, sans-serif;
   }
 
-  /* Accent-colored text (no rainbow) */
-  .spectrum-text {
-    color: #4F46E5;
+  /* Oversized editorial display headings */
+  .display {
+    font-family: 'Bricolage Grotesque', Inter, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.86;
   }
 
-  .spectrum-border {
-    border: 1px solid rgba(22, 21, 28, 0.12);
+  /* Electric accent fill */
+  .accent-fill {
+    background: linear-gradient(120deg, #3A2BFF, #6C5CFF);
   }
 
-  /* Clean card surface */
-  .glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px) saturate(120%);
-    -webkit-backdrop-filter: blur(12px) saturate(120%);
-    border: 1px solid rgba(22, 21, 28, 0.07);
+  .accent-text {
+    color: #3A2BFF;
   }
 
-  .glass-card {
-    background: #FFFFFF;
-    border: 1px solid rgba(22, 21, 28, 0.07);
-    box-shadow: 0 1px 2px rgba(22, 21, 28, 0.04), 0 8px 24px -16px rgba(22, 21, 28, 0.12);
-    transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+  /* Gradient text used for emphasis words */
+  .text-gradient {
+    background: linear-gradient(110deg, #3A2BFF 0%, #6C5CFF 45%, #FF5A2C 110%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Soft glassy panel on paper */
+  .panel {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(14px) saturate(130%);
+    -webkit-backdrop-filter: blur(14px) saturate(130%);
+    border: 1px solid rgba(21, 19, 15, 0.08);
+  }
+
+  .card {
+    background: rgba(255, 253, 248, 0.6);
+    border: 1px solid rgba(21, 19, 15, 0.08);
+    box-shadow: 0 1px 2px rgba(21, 19, 15, 0.03), 0 24px 48px -32px rgba(21, 19, 15, 0.25);
+    transition: box-shadow 0.4s ease, transform 0.4s ease, border-color 0.4s ease;
+  }
+
+  .hairline {
+    border-color: rgba(21, 19, 15, 0.12);
+  }
+
+  /* Word/line mask reveal helper */
+  .mask {
+    overflow: hidden;
+    display: block;
+  }
+
+  /* Film grain overlay */
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    pointer-events: none;
+    opacity: 0.45;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
+  }
+
+  /* Tap target on touch — disable grain blend cost slightly */
+  @media (max-width: 768px) {
+    .grain { opacity: 0.3; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }

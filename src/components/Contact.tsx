@@ -1,103 +1,94 @@
 import { motion } from 'framer-motion'
 import { useInView } from '../hooks/useInView'
+import { RevealLine } from './Reveal'
+import Marquee from './Marquee'
 import Magnetic from './Magnetic'
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 32 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
-  }),
-}
-
 const socials = [
-  {
-    name: 'GitHub',
-    handle: '@Saagnik-Mondal',
-    href: 'https://github.com/Saagnik-Mondal',
-    icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-      </svg>
-    ),
-  },
-  {
-    name: 'LinkedIn',
-    handle: 'Saagnik Mondal',
-    href: 'https://www.linkedin.com/in/saagnik-mondal/',
-    icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-      </svg>
-    ),
-  },
-  {
-    name: 'Email',
-    handle: 'saagnikmondal@gmail.com',
-    href: 'mailto:saagnikmondal@gmail.com',
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      </svg>
-    ),
-  },
+  { name: 'GitHub', handle: '@Saagnik-Mondal', href: 'https://github.com/Saagnik-Mondal' },
+  { name: 'LinkedIn', handle: 'Saagnik Mondal', href: 'https://www.linkedin.com/in/saagnik-mondal/' },
+  { name: 'Email', handle: 'saagnikmondal@gmail.com', href: 'mailto:saagnikmondal@gmail.com' },
 ]
 
 export default function Contact() {
   const [ref, inView] = useInView<HTMLElement>({ threshold: 0.15 })
 
   return (
-    <section id="contact" ref={ref} className="py-28 md:py-36 px-6">
-      <div className="max-w-3xl mx-auto text-center">
-        <motion.div variants={fadeUp} custom={0} initial="hidden" animate={inView ? 'visible' : 'hidden'} className="mb-8">
-          <p className="font-mono text-sm uppercase tracking-widest mb-3 font-semibold text-accent">04 · Contact</p>
-          <h2 className="font-black tracking-tighter text-ink leading-[0.92] text-[clamp(2.5rem,7vw,5rem)] mb-6">
-            Let's work<br /><span className="text-accent">together.</span>
-          </h2>
-          <p className="text-ink-soft text-base max-w-xl mx-auto leading-relaxed">
-            I'm actively looking for AI/ML engineering roles where I can ship
-            production models and grow with a strong team. If you're building
-            something intelligent, let's talk.
-          </p>
-        </motion.div>
+    <footer id="contact" ref={ref} className="relative overflow-hidden px-5 pt-28 md:px-10 md:pt-40">
+      <div className="mx-auto max-w-[1400px]">
+        <div className="mb-10 flex items-baseline gap-4">
+          <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">(04)</span>
+          <span className="font-mono text-xs uppercase tracking-[0.25em] text-ink-soft">Contact</span>
+        </div>
 
-        <motion.div variants={fadeUp} custom={1} initial="hidden" animate={inView ? 'visible' : 'hidden'} className="mb-12">
+        <h2 className="display text-ink text-[clamp(2.8rem,11vw,11rem)]">
+          <RevealLine>Let's build</RevealLine>
+          <RevealLine delay={0.08}>
+            <span className="text-gradient">something.</span>
+          </RevealLine>
+        </h2>
+
+        <div className="mt-12 grid items-end gap-10 md:grid-cols-[1fr_auto]">
+          <p className="max-w-xl text-lg leading-relaxed text-ink-soft">
+            I'm actively looking for AI/ML engineering roles where I can ship production models and
+            grow with a strong team. If you're building something intelligent, let's talk.
+          </p>
           <Magnetic strength={0.25}>
             <a
               href="mailto:saagnikmondal@gmail.com"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-semibold text-white wheel-bg shadow-lg shadow-accent/20"
+              data-cursor-label="Email"
+              className="group inline-flex items-center gap-3 rounded-full bg-ink px-8 py-5 text-lg font-semibold text-paper transition-colors hover:bg-accent"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              Say hello
+              <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M7 17L17 7M17 7H7m10 0v10" />
               </svg>
-              Say Hello
             </a>
           </Magnetic>
-        </motion.div>
+        </div>
 
-        <div className="grid sm:grid-cols-3 gap-3">
+        {/* social links */}
+        <div className="mt-16 grid gap-px overflow-hidden rounded-3xl border border-ink/10 bg-ink/10 sm:grid-cols-3">
           {socials.map((s, i) => (
             <motion.a
               key={s.name}
               href={s.href}
               target={s.name !== 'Email' ? '_blank' : undefined}
               rel={s.name !== 'Email' ? 'noopener noreferrer' : undefined}
-              variants={fadeUp}
-              custom={i + 2}
-              initial="hidden"
-              animate={inView ? 'visible' : 'hidden'}
-              className="glass-card rounded-xl p-5 flex flex-col items-center gap-2 hover:-translate-y-1 hover:border-accent/30 hover:text-accent text-ink transition-all"
+              data-cursor="hover"
+              initial={{ opacity: 0 }}
+              animate={inView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="group flex items-center justify-between bg-paper p-6 transition-colors hover:bg-paper-2"
             >
-              {s.icon}
               <div>
-                <p className="font-semibold text-sm">{s.name}</p>
-                <p className="text-ink-soft text-xs mt-0.5">{s.handle}</p>
+                <p className="text-xs font-medium uppercase tracking-wider text-ink-faint">{s.name}</p>
+                <p className="mt-1 font-medium text-ink transition-colors group-hover:text-accent">{s.handle}</p>
               </div>
+              <svg className="h-4 w-4 text-ink-faint transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M7 17L17 7M17 7H7m10 0v10" />
+              </svg>
             </motion.a>
           ))}
         </div>
       </div>
-    </section>
+
+      {/* giant marquee footer */}
+      <div className="mt-20 border-t border-ink/12 py-8">
+        <Marquee>
+          <span className="display flex items-center text-[12vw] leading-none text-ink/10">
+            <span className="mx-8">Saagnik Mondal</span>
+            <span className="mx-8 text-accent/20">—</span>
+            <span className="mx-8">AI / ML Engineer</span>
+            <span className="mx-8 text-accent/20">—</span>
+          </span>
+        </Marquee>
+      </div>
+
+      <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-2 pb-10 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-soft sm:flex-row">
+        <span>© {new Date().getFullYear()} Saagnik Mondal</span>
+        <span>Built with React · Three.js · Framer Motion</span>
+      </div>
+    </footer>
   )
 }

@@ -1,69 +1,81 @@
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { MeshDistortMaterial } from '@react-three/drei'
+import { MeshDistortMaterial, Float } from '@react-three/drei'
 import * as THREE from 'three'
 import { scrollStore } from '../lib/scroll-store'
 
-function ReactiveBlob() {
+function Knot() {
   const group = useRef<THREE.Group>(null)
   const mat = useRef<any>(null)
-  const wire = useRef<THREE.Mesh>(null)
-  const distort = useRef(0.3)
+  const halo = useRef<THREE.Mesh>(null)
+  const distort = useRef(0.32)
 
-  useFrame(({ mouse }, delta) => {
+  useFrame(({ mouse, clock }, delta) => {
     const { progress, velocity } = scrollStore
-    const absV = Math.min(Math.abs(velocity) * 0.012, 0.5)
+    const absV = Math.min(Math.abs(velocity) * 0.012, 0.55)
 
-    // distortion eases toward a scroll-velocity-driven target
-    const targetDistort = 0.28 + absV
-    distort.current += (targetDistort - distort.current) * 0.08
+    const targetDistort = 0.3 + absV
+    distort.current += (targetDistort - distort.current) * 0.07
     if (mat.current) mat.current.distort = distort.current
 
     if (group.current) {
-      // continuous spin + extra spin from scroll velocity
-      group.current.rotation.y += delta * 0.18 + velocity * 0.0006
-      group.current.rotation.z += delta * 0.04
-      // gentle parallax toward cursor
-      group.current.rotation.x += (-mouse.y * 0.25 - group.current.rotation.x) * 0.04
+      group.current.rotation.y += delta * 0.16 + velocity * 0.0005
+      group.current.rotation.z += delta * 0.03
+      group.current.rotation.x += (-mouse.y * 0.3 - group.current.rotation.x) * 0.04
 
-      // drift + shrink as the page scrolls
-      const s = 1.6 - progress * 0.55
+      // drift across + down, shrinking on scroll
+      const s = 1.55 - progress * 0.5
       group.current.scale.setScalar(s)
-      group.current.position.x = progress * 1.6
-      group.current.position.y = progress * 0.4
+      group.current.position.x = 1.05 + progress * 1.4 + mouse.x * 0.25
+      group.current.position.y = 0.1 - progress * 0.8 + Math.sin(clock.elapsedTime * 0.4) * 0.06
     }
-    if (wire.current) wire.current.rotation.y -= delta * 0.05
+    if (halo.current) halo.current.rotation.y -= delta * 0.06
   })
 
   return (
-    <group ref={group}>
-      <mesh>
-        <icosahedronGeometry args={[1, 14]} />
-        <MeshDistortMaterial
-          ref={mat}
-          color="#4F46E5"
-          roughness={0.2}
-          metalness={0.15}
-          distort={0.3}
-          speed={2}
-        />
-      </mesh>
-      <mesh ref={wire} scale={1.04}>
-        <icosahedronGeometry args={[1, 3]} />
-        <meshBasicMaterial color="#A5B4FC" wireframe transparent opacity={0.14} />
-      </mesh>
+    <group ref={group} position={[1.05, 0.1, 0]}>
+      <Float speed={1.4} rotationIntensity={0.3} floatIntensity={0.5}>
+        <mesh>
+          <icosahedronGeometry args={[1, 18]} />
+          <MeshDistortMaterial
+            ref={mat}
+            color="#3A2BFF"
+            roughness={0.22}
+            metalness={0.18}
+            distort={0.32}
+            speed={1.8}
+          />
+        </mesh>
+        <mesh ref={halo} scale={1.16}>
+          <icosahedronGeometry args={[1, 2]} />
+          <meshBasicMaterial color="#FF5A2C" wireframe transparent opacity={0.1} />
+        </mesh>
+      </Float>
     </group>
   )
 }
 
 export default function Scene3D() {
+  const reduce = useMemo(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    [],
+  )
+  if (reduce) return null
+
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none">
-      <Canvas camera={{ position: [0, 0, 4.6], fov: 50 }} gl={{ alpha: true, antialias: true }} dpr={[1, 2]}>
-        <ambientLight intensity={0.75} />
-        <directionalLight position={[3, 4, 5]} intensity={1.5} color="#ffffff" />
-        <directionalLight position={[-4, -2, 1]} intensity={0.6} color="#A5B4FC" />
-        <ReactiveBlob />
+    <div className="pointer-events-none fixed inset-0 z-0">
+      <Canvas
+        camera={{ position: [0, 0, 4.6], fov: 50 }}
+        gl={{ alpha: true, antialias: true }}
+        dpr={[1, 1.8]}
+      >
+        <ambientLight intensity={0.85} />
+        <directionalLight position={[3, 4, 5]} intensity={1.8} color="#ffffff" />
+        <directionalLight position={[-4, -2, 1]} intensity={0.9} color="#FF8A66" />
+        <pointLight position={[2, -3, 2]} intensity={0.6} color="#6C5CFF" />
+        <Knot />
       </Canvas>
     </div>
   )

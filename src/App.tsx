@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
 import { SmoothScrollProvider } from './lib/smooth-scroll'
 import Loader from './components/Loader'
 import Cursor from './components/Cursor'
@@ -11,14 +11,14 @@ import Projects from './components/Projects'
 import Skills from './components/Skills'
 import Contact from './components/Contact'
 
-function Footer() {
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 })
   return (
-    <footer className="py-10 px-6 border-t border-ink/10">
-      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-        <p className="text-ink-soft text-sm">© {new Date().getFullYear()} Saagnik Mondal</p>
-        <p className="text-ink-soft text-sm">Built with React, Three.js &amp; Framer Motion</p>
-      </div>
-    </footer>
+    <motion.div
+      style={{ scaleX }}
+      className="fixed left-0 top-0 z-[120] h-[2px] w-full origin-left accent-fill"
+    />
   )
 }
 
@@ -31,10 +31,12 @@ export default function App() {
         {!loaded && <Loader onDone={() => setLoaded(true)} />}
       </AnimatePresence>
 
+      <div className="grain" aria-hidden />
       <Cursor />
+      <ScrollProgress />
 
       <SmoothScrollProvider>
-        <div className="min-h-screen relative">
+        <div className="relative min-h-screen">
           <Scene3D />
           <Navbar />
           <main className="relative z-[2]">
@@ -44,9 +46,6 @@ export default function App() {
             <Skills />
             <Contact />
           </main>
-          <div className="relative z-[2]">
-            <Footer />
-          </div>
         </div>
       </SmoothScrollProvider>
     </>

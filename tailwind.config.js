@@ -4,40 +4,49 @@ export default {
   theme: {
     extend: {
       colors: {
-        cream: '#FAF9F6',
-        'cream-2': '#F1F0EC',
-        ink: '#16151C',
-        'ink-soft': '#6E6D77',
+        // Warm paper canvas — "light cinematic"
+        paper: '#F2EEE6',
+        'paper-2': '#E8E3D7',
+        'paper-3': '#DCD6C7',
+        ink: '#15130F',
+        'ink-soft': '#736E62',
+        'ink-faint': '#A7A294',
+        // Primary electric accent + warm cinematic secondary
         accent: {
-          DEFAULT: '#4F46E5',
-          soft: '#6366F1',
-          tint: '#EEF0FF',
+          DEFAULT: '#3A2BFF',
+          soft: '#6C5CFF',
+          tint: '#E9E6FF',
         },
-        // legacy spectrum tokens collapsed to the single accent for cohesion
-        spectrum: {
-          rose: '#4F46E5',
-          orange: '#4F46E5',
-          yellow: '#4F46E5',
-          green: '#4F46E5',
-          cyan: '#4F46E5',
-          blue: '#4F46E5',
-          violet: '#4F46E5',
-          magenta: '#4F46E5',
+        ember: {
+          DEFAULT: '#FF5A2C',
+          soft: '#FF8A66',
         },
       },
       fontFamily: {
+        display: ['"Bricolage Grotesque"', 'Inter', 'system-ui', 'sans-serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
+      letterSpacing: {
+        tightest: '-0.045em',
       },
       animation: {
-        float: 'float 6s ease-in-out infinite',
-        'spin-slow': 'spin 18s linear infinite',
-        'spin-slower': 'spin 30s linear infinite',
+        float: 'float 7s ease-in-out infinite',
+        marquee: 'marquee 28s linear infinite',
+        'marquee-rev': 'marquee-rev 28s linear infinite',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-12px)' },
+        },
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        'marquee-rev': {
+          '0%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(0)' },
         },
       },
     },
