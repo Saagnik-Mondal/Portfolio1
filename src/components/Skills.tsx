@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { skills } from '../data/portfolio'
 import { RevealLine } from './Reveal'
 import Marquee from './Marquee'
@@ -15,84 +15,121 @@ const ALSO = [
 /** level >= 88 reads as a primary, daily-driver tool. */
 const isCore = (level: number) => level >= 88
 
+const panel = {
+  open: { height: 'auto', opacity: 1, transition: { duration: 0.55, ease: EASE, when: 'beforeChildren', staggerChildren: 0.04 } },
+  closed: { height: 0, opacity: 0, transition: { duration: 0.4, ease: EASE } },
+}
+const chip = {
+  open: { y: 0, opacity: 1 },
+  closed: { y: 12, opacity: 0 },
+}
+
 function CategoryRow({
   cat,
   index,
-  hovered,
-  setHovered,
+  active,
+  onActivate,
 }: {
   cat: typeof skills[0]
   index: number
-  hovered: number | null
-  setHovered: (i: number | null) => void
+  active: boolean
+  onActivate: () => void
 }) {
-  const isHovered = hovered === index
-  const dim = hovered !== null && !isHovered
+  const coreCount = cat.items.filter((i) => isCore(i.level)).length
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-12% 0px' }}
-      transition={{ duration: 0.7, delay: index * 0.08, ease: EASE }}
-      onMouseEnter={() => setHovered(index)}
-      onMouseLeave={() => setHovered(null)}
-      className="border-t border-ink/12 py-9 transition-opacity duration-300 last:border-b md:py-12"
-      style={{ opacity: dim ? 0.4 : 1 }}
+      transition={{ duration: 0.7, delay: index * 0.06, ease: EASE }}
+      onMouseEnter={onActivate}
+      className="border-b border-ink/12"
     >
-      <div className="grid gap-6 md:grid-cols-[300px_1fr] md:gap-12">
-        {/* left: category meta */}
-        <div className="flex items-start gap-4">
-          <span className="mt-1.5 font-mono text-sm text-ink-faint">
+      <button
+        onClick={onActivate}
+        data-cursor="hover"
+        className="group flex w-full items-center justify-between gap-6 py-7 text-left md:py-9"
+      >
+        <div className="flex min-w-0 items-baseline gap-4 md:gap-7">
+          <span className="font-mono text-sm text-ink-faint">
             ({String(index + 1).padStart(2, '0')})
           </span>
-          <div>
-            <h3
-              className="display text-[clamp(1.6rem,3vw,2.4rem)] leading-[0.95] text-ink transition-colors"
-              style={{ color: isHovered ? '#3A2BFF' : undefined }}
-            >
-              {cat.category}
-            </h3>
-            <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-faint">
-              {cat.items.length} tools · {cat.items.filter((i) => isCore(i.level)).length} core
-            </p>
-          </div>
+          <h3
+            className="display truncate text-[clamp(1.9rem,6vw,4.5rem)] leading-[0.9] transition-colors duration-300"
+            style={{ color: active ? '#3A2BFF' : '#15130F' }}
+          >
+            {cat.category}
+          </h3>
         </div>
 
-        {/* right: tools as an editorial line, weighted by proficiency */}
-        <div className="flex flex-wrap items-baseline gap-x-7 gap-y-3">
-          {cat.items.map((item) => {
-            const core = isCore(item.level)
-            return (
-              <span
-                key={item.name}
-                data-cursor="hover"
-                className={`group relative font-display leading-none transition-colors ${
-                  core
-                    ? 'text-[clamp(1.25rem,2vw,1.8rem)] font-semibold text-ink'
-                    : 'text-[clamp(1.05rem,1.6vw,1.35rem)] font-medium text-ink-faint'
-                } hover:text-accent`}
-              >
-                {core && (
-                  <span className="mr-1.5 inline-block h-1.5 w-1.5 -translate-y-1 rounded-full bg-ember align-middle" />
-                )}
-                {item.name}
-              </span>
-            )
-          })}
+        <div className="flex shrink-0 items-center gap-5">
+          <span className="hidden font-mono text-[11px] uppercase tracking-[0.18em] text-ink-faint sm:block">
+            {cat.items.length} tools · {coreCount} core
+          </span>
+          <motion.span
+            animate={{ rotate: active ? 45 : 0 }}
+            transition={{ duration: 0.4, ease: EASE }}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors"
+            style={{
+              borderColor: active ? '#3A2BFF' : 'rgba(21,19,15,0.15)',
+              background: active ? '#3A2BFF' : 'transparent',
+              color: active ? '#fff' : '#15130F',
+            }}
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 5v14M5 12h14" />
+            </svg>
+          </motion.span>
         </div>
-      </div>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {active && (
+          <motion.div
+            key="panel"
+            variants={panel}
+            initial="closed"
+            animate="open"
+            exit="closed"
+            className="overflow-hidden"
+          >
+            <div className="flex flex-wrap items-baseline gap-x-8 gap-y-4 pb-9 pl-9 md:pl-[4.5rem]">
+              {cat.items.map((item) => {
+                const core = isCore(item.level)
+                return (
+                  <motion.span
+                    key={item.name}
+                    variants={chip}
+                    data-cursor="hover"
+                    className={`group/t relative font-display leading-none transition-colors duration-200 ${
+                      core
+                        ? 'text-[clamp(1.3rem,2.4vw,2.1rem)] font-semibold text-ink'
+                        : 'text-[clamp(1.05rem,1.7vw,1.45rem)] font-medium text-ink-faint'
+                    } hover:text-accent`}
+                  >
+                    {core && (
+                      <span className="mr-2 inline-block h-1.5 w-1.5 -translate-y-1.5 rounded-full bg-ember align-middle" />
+                    )}
+                    {item.name}
+                  </motion.span>
+                )
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }
 
 export default function Skills() {
-  const [hovered, setHovered] = useState<number | null>(null)
+  const [active, setActive] = useState(0)
 
   return (
-    <section id="skills" className="relative px-5 py-20 md:px-10 md:py-28">
+    <section id="skills" className="relative px-5 py-16 md:px-10 md:py-24">
       <div className="mx-auto max-w-[1400px]">
-        <div className="mb-10 flex items-baseline gap-4">
+        <div className="mb-8 flex items-baseline gap-4">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">(03)</span>
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-ink-soft">Toolkit</span>
         </div>
@@ -104,23 +141,23 @@ export default function Skills() {
           </h2>
           <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-soft">
             <span className="h-1.5 w-1.5 rounded-full bg-ember" />
-            Core focus
+            Core focus · hover to explore
           </p>
         </div>
 
-        <div onMouseLeave={() => setHovered(null)}>
+        <div className="border-t border-ink/12">
           {skills.map((cat, i) => (
             <CategoryRow
               key={cat.category}
               cat={cat}
               index={i}
-              hovered={hovered}
-              setHovered={setHovered}
+              active={active === i}
+              onActivate={() => setActive(i)}
             />
           ))}
         </div>
 
-        <div className="mt-14">
+        <div className="mt-12">
           <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft">
             Also familiar with
           </p>
