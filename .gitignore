@@ -1,1 +1,6 @@
 node_modules
+
+# local env (keys live here for dev; copy from .env.example)
+.env
+.env.local
+.env.*.local

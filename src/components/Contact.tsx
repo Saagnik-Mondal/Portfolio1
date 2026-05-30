@@ -10,7 +10,8 @@ const EMAIL = 'saagnikmondal@gmail.com'
 /** Web3Forms access key — set VITE_WEB3FORMS_KEY in .env, or replace the
  *  fallback string below with your key from https://web3forms.com (free). */
 const ACCESS_KEY =
-  (import.meta.env.VITE_WEB3FORMS_KEY as string | undefined) ?? 'YOUR_WEB3FORMS_ACCESS_KEY'
+  (import.meta.env.VITE_WEB3FORMS_KEY as string | undefined) ??
+  'ca0df92f-2861-4b60-bdfa-b83e7b897756'
 
 const GitHubIcon = (p: { className?: string }) => (
   <svg className={p.className} fill="currentColor" viewBox="0 0 24 24" aria-hidden>
