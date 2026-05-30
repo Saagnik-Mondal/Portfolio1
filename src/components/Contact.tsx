@@ -7,6 +7,11 @@ import Marquee from './Marquee'
 const EASE = [0.22, 1, 0.36, 1] as const
 const EMAIL = 'saagnikmondal@gmail.com'
 
+/** Web3Forms access key — set VITE_WEB3FORMS_KEY in .env, or replace the
+ *  fallback string below with your key from https://web3forms.com (free). */
+const ACCESS_KEY =
+  (import.meta.env.VITE_WEB3FORMS_KEY as string | undefined) ?? 'YOUR_WEB3FORMS_ACCESS_KEY'
+
 const GitHubIcon = (p: { className?: string }) => (
   <svg className={p.className} fill="currentColor" viewBox="0 0 24 24" aria-hidden>
     <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
@@ -31,6 +36,9 @@ type Channel = {
   href: string
   color: string
   Icon: (p: { className?: string }) => JSX.Element
+  /** opens the in-page message form instead of navigating */
+  form?: boolean
+  /** shows the click-to-copy email chip */
   copy?: boolean
 }
 
@@ -54,10 +62,11 @@ const channels: Channel[] = [
   {
     name: 'Email',
     handle: EMAIL,
-    meta: 'Fastest way to reach me',
+    meta: 'Write me right here — no inbox needed',
     href: `mailto:${EMAIL}`,
     color: '#FF5A2C',
     Icon: MailIcon,
+    form: true,
     copy: true,
   },
 ]
@@ -69,6 +78,7 @@ function Panel({
   dim,
   onEnter,
   onLeave,
+  onForm,
 }: {
   ch: Channel
   index: number
@@ -76,6 +86,7 @@ function Panel({
   dim: boolean
   onEnter: () => void
   onLeave: () => void
+  onForm: () => void
 }) {
   const [copied, setCopied] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -83,17 +94,24 @@ function Panel({
 
   const copy = async (e: React.MouseEvent) => {
     e.preventDefault()
+    e.stopPropagation()
     try { await navigator.clipboard.writeText(EMAIL) } catch { /* ignore */ }
     setCopied(true)
     if (timer.current) clearTimeout(timer.current)
     timer.current = setTimeout(() => setCopied(false), 1600)
   }
 
+  const isForm = !!ch.form
+
   return (
     <a
-      href={ch.href}
-      target={ch.copy ? undefined : '_blank'}
-      rel={ch.copy ? undefined : 'noopener noreferrer'}
+      href={isForm ? undefined : ch.href}
+      role={isForm ? 'button' : undefined}
+      tabIndex={isForm ? 0 : undefined}
+      onClick={isForm ? (e) => { e.preventDefault(); onForm() } : undefined}
+      onKeyDown={isForm ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onForm() } } : undefined}
+      target={!isForm && !ch.copy ? '_blank' : undefined}
+      rel={!isForm && !ch.copy ? 'noopener noreferrer' : undefined}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
       data-cursor="hover"
@@ -101,14 +119,14 @@ function Panel({
         flexGrow: active ? 2.4 : dim ? 0.78 : 1,
         background: active ? ch.color : undefined,
       }}
-      className={`group relative flex h-[168px] flex-col justify-between overflow-hidden rounded-[26px] border border-ink/10 p-6 transition-[flex-grow,background-color,border-color] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] md:h-[440px] md:p-8 ${
+      className={`group relative flex h-[168px] cursor-pointer flex-col justify-between overflow-hidden rounded-[26px] border border-ink/10 p-6 transition-[flex-grow,background-color,border-color] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] md:h-[440px] md:p-8 ${
         active ? 'border-transparent' : 'bg-paper-2/70'
       }`}
     >
       {/* watermark icon */}
       <ch.Icon
         className={`pointer-events-none absolute -bottom-8 -right-6 h-44 w-44 transition-all duration-[600ms] ${
-          active ? 'text-white/12 opacity-100' : 'text-ink/[0.05] opacity-100 md:opacity-100'
+          active ? 'text-white/12' : 'text-ink/[0.05]'
         }`}
       />
 
@@ -155,13 +173,14 @@ function Panel({
                 active ? 'text-white' : 'text-ink'
               }`}
             >
-              {ch.copy ? 'Open mail' : 'Visit'}
+              {isForm ? 'Write a message' : 'Visit'}
               <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M7 17L17 7M17 7H7m10 0v10" />
               </svg>
             </span>
             {ch.copy && (
               <button
+                type="button"
                 onClick={copy}
                 data-cursor-label={copied ? 'Copied' : 'Copy'}
                 className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] transition-colors duration-300 ${
@@ -176,7 +195,7 @@ function Panel({
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.18 }}
                   >
-                    {copied ? 'Copied ✓' : 'Copy'}
+                    {copied ? 'Copied ✓' : 'Copy email'}
                   </motion.span>
                 </AnimatePresence>
               </button>
@@ -188,9 +207,197 @@ function Panel({
   )
 }
 
+type Status = 'idle' | 'sending' | 'success' | 'error'
+
+function Field({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-ink-soft">{label}</span>
+      {children}
+    </label>
+  )
+}
+
+const inputCls =
+  'w-full rounded-xl border border-ink/12 bg-paper-2/60 px-4 py-3 text-[15px] text-ink placeholder:text-ink-faint outline-none transition-colors focus:border-accent focus:bg-paper'
+
+function MessageForm({ onClose }: { onClose: () => void }) {
+  const [status, setStatus] = useState<Status>('idle')
+  const [error, setError] = useState('')
+
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const form = e.currentTarget
+    const data = new FormData(form)
+    if (data.get('botcheck')) return // honeypot tripped
+    setStatus('sending')
+    setError('')
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: data,
+      })
+      const json = await res.json()
+      if (json.success) {
+        setStatus('success')
+      } else {
+        setStatus('error')
+        setError(json.message || 'Could not send. Please try again.')
+      }
+    } catch {
+      setStatus('error')
+      setError('Network error — please try again in a moment.')
+    }
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      className="fixed inset-0 z-[150] flex items-end justify-center bg-ink/30 backdrop-blur-sm sm:items-center sm:p-6"
+    >
+      <motion.div
+        initial={{ y: 80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 60, opacity: 0 }}
+        transition={{ duration: 0.5, ease: EASE }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-3xl border border-ink/10 bg-paper shadow-2xl sm:rounded-3xl"
+      >
+        <div className="flex items-start justify-between gap-4 border-b border-ink/10 px-7 pb-4 pt-7">
+          <div>
+            <div className="mb-1 font-mono text-[11px] uppercase tracking-[0.18em] text-accent">Send a message</div>
+            <h3 className="display text-2xl leading-tight text-ink">Let's talk.</h3>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            data-cursor="hover"
+            aria-label="Close"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-ink/5 hover:text-ink"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <AnimatePresence mode="wait">
+          {status === 'success' ? (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="flex flex-col items-center px-7 py-12 text-center"
+            >
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600">
+                <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M5 13l4 4L19 7" />
+                </svg>
+              </span>
+              <h4 className="display mt-5 text-2xl text-ink">Message sent!</h4>
+              <p className="mt-2 max-w-xs text-[15px] leading-relaxed text-ink-soft">
+                Thanks for reaching out — I'll get back to you at the email you provided, usually within a day.
+              </p>
+              <button
+                type="button"
+                onClick={onClose}
+                data-cursor="hover"
+                className="mt-7 rounded-full bg-ink px-6 py-3 font-semibold text-paper transition-colors hover:bg-accent"
+              >
+                Done
+              </button>
+            </motion.div>
+          ) : (
+            <motion.form
+              key="form"
+              onSubmit={submit}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="space-y-4 px-7 py-7"
+            >
+              <input type="hidden" name="access_key" value={ACCESS_KEY} />
+              <input type="hidden" name="subject" value="New message from your portfolio" />
+              <input type="hidden" name="from_name" value="Portfolio · saagnik-mondal.me" />
+              {/* honeypot */}
+              <input type="checkbox" name="botcheck" className="hidden" tabIndex={-1} autoComplete="off" />
+
+              <Field label="Your name">
+                <input name="name" required placeholder="Jane Doe" className={inputCls} />
+              </Field>
+              <Field label="Your email">
+                <input name="email" type="email" required placeholder="jane@company.com" className={inputCls} />
+              </Field>
+              <Field label="Message">
+                <textarea
+                  name="message"
+                  required
+                  rows={4}
+                  placeholder="Tell me about the role or project…"
+                  className={`${inputCls} resize-none`}
+                />
+              </Field>
+
+              {status === 'error' && (
+                <p className="rounded-lg bg-ember/10 px-3 py-2 text-sm text-ember">{error}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={status === 'sending'}
+                data-cursor="hover"
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-6 py-3.5 font-semibold text-paper transition-colors hover:bg-accent disabled:opacity-60"
+              >
+                {status === 'sending' ? (
+                  <>
+                    <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" className="opacity-25" />
+                      <path d="M21 12a9 9 0 00-9-9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                    </svg>
+                    Sending…
+                  </>
+                ) : (
+                  <>
+                    Send message
+                    <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </>
+                )}
+              </button>
+              <p className="text-center font-mono text-[10px] uppercase tracking-[0.16em] text-ink-faint">
+                Or email directly · {EMAIL}
+              </p>
+            </motion.form>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
+  )
+}
+
 export default function Contact() {
   const [ref, inView] = useInView<HTMLElement>({ threshold: 0.12 })
   const [active, setActive] = useState<number | null>(null)
+  const [formOpen, setFormOpen] = useState(false)
+
+  // let the navbar "Let's talk" button (and anywhere else) open the form
+  useEffect(() => {
+    const open = () => setFormOpen(true)
+    window.addEventListener('open-message-form', open)
+    return () => window.removeEventListener('open-message-form', open)
+  }, [])
 
   return (
     <footer id="contact" ref={ref} className="relative overflow-hidden px-5 pt-12 md:px-10 md:pt-16">
@@ -209,7 +416,7 @@ export default function Contact() {
 
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
           I'm actively looking for AI/ML engineering roles where I can ship production models and
-          grow with a strong team. Pick a channel — hover to open it up.
+          grow with a strong team. Drop me a message right here — no inbox needed.
         </p>
 
         {/* expanding channel gallery */}
@@ -228,6 +435,7 @@ export default function Contact() {
               dim={active !== null && active !== i}
               onEnter={() => setActive(i)}
               onLeave={() => setActive(null)}
+              onForm={() => setFormOpen(true)}
             />
           ))}
         </motion.div>
@@ -249,6 +457,10 @@ export default function Contact() {
         <span>© {new Date().getFullYear()} Saagnik Mondal</span>
         <span>Built with React · Three.js · Framer Motion</span>
       </div>
+
+      <AnimatePresence>
+        {formOpen && <MessageForm onClose={() => setFormOpen(false)} />}
+      </AnimatePresence>
     </footer>
   )
 }

@@ -20,6 +20,13 @@ export default function Navbar() {
     scrollTo(href)
   }
 
+  const openContactForm = () => {
+    setMenuOpen(false)
+    scrollTo('#contact')
+    // let the scroll settle, then pop the in-page message form
+    window.setTimeout(() => window.dispatchEvent(new Event('open-message-form')), 650)
+  }
+
   return (
     <motion.nav
       initial={{ y: -90, opacity: 0 }}
@@ -69,13 +76,13 @@ export default function Navbar() {
         </div>
 
         <Magnetic strength={0.3}>
-          <a
-            href="mailto:saagnikmondal@gmail.com"
+          <button
+            onClick={openContactForm}
             data-cursor="hover"
             className="hidden rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-accent md:inline-flex"
           >
             Let's talk
-          </a>
+          </button>
         </Magnetic>
 
         <button
@@ -112,12 +119,12 @@ export default function Navbar() {
                   {link.label}
                 </button>
               ))}
-              <a
-                href="mailto:saagnikmondal@gmail.com"
+              <button
+                onClick={openContactForm}
                 className="mt-1 rounded-xl bg-ink px-4 py-3 text-center font-semibold text-paper"
               >
                 Let's talk
-              </a>
+              </button>
             </div>
           </motion.div>
         )}
