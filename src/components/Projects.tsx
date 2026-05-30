@@ -184,7 +184,7 @@ export default function Projects() {
   const [active, setActive] = useState<Project | null>(null)
 
   return (
-    <section id="projects" ref={ref} className="relative px-5 py-16 md:px-10 md:py-24">
+    <section id="projects" ref={ref} className="relative px-5 py-12 md:px-10 md:py-16">
       <div className="mx-auto max-w-[1400px]">
         <div className="mb-6 flex items-baseline gap-4">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">(02)</span>
@@ -195,7 +195,7 @@ export default function Projects() {
           <RevealLine>Things I've</RevealLine>
           <RevealLine delay={0.08}><span className="text-gradient">built.</span></RevealLine>
         </h2>
-        <p className="mb-12 max-w-md text-ink-soft">
+        <p className="mb-8 max-w-md text-ink-soft">
           Pinned notes from the lab — tap any to read the full case study: the problem, my
           approach, and what shipped.
         </p>

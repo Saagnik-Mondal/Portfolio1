@@ -45,14 +45,14 @@ export default function Skills() {
   }
 
   return (
-    <section id="skills" className="relative px-5 py-16 md:px-10 md:py-24">
+    <section id="skills" className="relative px-5 py-12 md:px-10 md:py-16">
       <div className="mx-auto max-w-[1400px]">
         <div className="mb-6 flex items-baseline gap-4">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">(03)</span>
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-ink-soft">Toolkit</span>
         </div>
 
-        <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-6">
           <h2 className="display text-ink text-[clamp(2.5rem,7vw,6rem)]">
             <RevealLine>What I work</RevealLine>
             <RevealLine delay={0.08}><span className="text-gradient">with.</span></RevealLine>
@@ -106,7 +106,7 @@ export default function Skills() {
           {/* right: cinematic stage */}
           <div
             onMouseMove={onMove}
-            className="relative min-h-[440px] overflow-hidden rounded-3xl border border-ink/10 bg-paper-2/60 p-7 md:min-h-[480px] md:p-10"
+            className="relative min-h-[360px] overflow-hidden rounded-3xl border border-ink/10 bg-paper-2/60 p-7 md:min-h-[400px] md:p-10"
           >
             <motion.div style={{ background: glow }} className="pointer-events-none absolute inset-0" />
 
@@ -171,8 +171,8 @@ export default function Skills() {
           </div>
         </div>
 
-        <div className="mt-14">
-          <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft">
+        <div className="mt-10">
+          <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft">
             Also familiar with
           </p>
           <Marquee reverse>

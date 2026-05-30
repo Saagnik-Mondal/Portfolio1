@@ -43,7 +43,7 @@ export default function About() {
   const [ref, inView] = useInView<HTMLElement>({ threshold: 0.15 })
 
   return (
-    <section id="about" ref={ref} className="relative px-5 py-16 md:px-10 md:py-24">
+    <section id="about" ref={ref} className="relative px-5 py-12 md:px-10 md:py-16">
       <div className="mx-auto max-w-[1400px]">
         <div className="mb-6 flex items-baseline gap-4">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">(01)</span>

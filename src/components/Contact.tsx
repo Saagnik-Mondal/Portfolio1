@@ -193,7 +193,7 @@ export default function Contact() {
   const [active, setActive] = useState<number | null>(null)
 
   return (
-    <footer id="contact" ref={ref} className="relative overflow-hidden px-5 pt-16 md:px-10 md:pt-24">
+    <footer id="contact" ref={ref} className="relative overflow-hidden px-5 pt-12 md:px-10 md:pt-16">
       <div className="mx-auto max-w-[1400px]">
         <div className="mb-6 flex items-baseline gap-4">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">(04)</span>
@@ -217,7 +217,7 @@ export default function Contact() {
           initial={{ opacity: 0, y: 28 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
-          className="mt-12 flex flex-col gap-4 md:flex-row"
+          className="mt-8 flex flex-col gap-4 md:flex-row"
         >
           {channels.map((ch, i) => (
             <Panel
@@ -234,7 +234,7 @@ export default function Contact() {
       </div>
 
       {/* giant marquee footer */}
-      <div className="mt-20 border-t border-ink/12 py-8">
+      <div className="mt-14 border-t border-ink/12 py-8">
         <Marquee>
           <span className="display flex items-center text-[12vw] leading-none text-ink/10">
             <span className="mx-8">Saagnik Mondal</span>
