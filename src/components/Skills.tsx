@@ -47,13 +47,13 @@ export default function Skills() {
   return (
     <section id="skills" className="relative px-5 py-16 md:px-10 md:py-24">
       <div className="mx-auto max-w-[1400px]">
-        <div className="mb-8 flex items-baseline gap-4">
+        <div className="mb-6 flex items-baseline gap-4">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">(03)</span>
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-ink-soft">Toolkit</span>
         </div>
 
         <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
-          <h2 className="display text-ink text-[clamp(2.5rem,8vw,7rem)]">
+          <h2 className="display text-ink text-[clamp(2.5rem,7vw,6rem)]">
             <RevealLine>What I work</RevealLine>
             <RevealLine delay={0.08}><span className="text-gradient">with.</span></RevealLine>
           </h2>

@@ -45,7 +45,7 @@ export default function About() {
   return (
     <section id="about" ref={ref} className="relative px-5 py-16 md:px-10 md:py-24">
       <div className="mx-auto max-w-[1400px]">
-        <div className="mb-12 flex items-baseline gap-4">
+        <div className="mb-6 flex items-baseline gap-4">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">(01)</span>
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-ink-soft">About</span>
         </div>

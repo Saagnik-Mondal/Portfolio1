@@ -186,12 +186,12 @@ export default function Projects() {
   return (
     <section id="projects" ref={ref} className="relative px-5 py-16 md:px-10 md:py-24">
       <div className="mx-auto max-w-[1400px]">
-        <div className="mb-12 flex items-baseline gap-4">
+        <div className="mb-6 flex items-baseline gap-4">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">(02)</span>
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-ink-soft">Selected work</span>
         </div>
 
-        <h2 className="display mb-4 text-ink text-[clamp(2.5rem,8vw,7rem)]">
+        <h2 className="display mb-5 text-ink text-[clamp(2.5rem,7vw,6rem)]">
           <RevealLine>Things I've</RevealLine>
           <RevealLine delay={0.08}><span className="text-gradient">built.</span></RevealLine>
         </h2>

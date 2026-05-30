@@ -195,19 +195,19 @@ export default function Contact() {
   return (
     <footer id="contact" ref={ref} className="relative overflow-hidden px-5 pt-16 md:px-10 md:pt-24">
       <div className="mx-auto max-w-[1400px]">
-        <div className="mb-10 flex items-baseline gap-4">
+        <div className="mb-6 flex items-baseline gap-4">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent">(04)</span>
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-ink-soft">Contact</span>
         </div>
 
-        <h2 className="display text-ink text-[clamp(2.8rem,11vw,11rem)]">
+        <h2 className="display text-ink text-[clamp(2.5rem,7vw,6rem)]">
           <RevealLine>Let's build</RevealLine>
           <RevealLine delay={0.08}>
             <span className="text-gradient">something.</span>
           </RevealLine>
         </h2>
 
-        <p className="mt-8 max-w-xl text-lg leading-relaxed text-ink-soft">
+        <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
           I'm actively looking for AI/ML engineering roles where I can ship production models and
           grow with a strong team. Pick a channel — hover to open it up.
         </p>
