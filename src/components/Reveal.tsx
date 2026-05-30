@@ -19,7 +19,7 @@ export function Reveal({ children, delay = 0, y = 28, className }: Props) {
       className={className}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-12% 0px' }}
+      viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 0.85, delay, ease: EASE }}
     >
       {children}
@@ -43,7 +43,7 @@ export function RevealLine({
         className={`block ${className}`}
         initial={{ y: '115%' }}
         whileInView={{ y: 0 }}
-        viewport={{ once: true, margin: '-8% 0px' }}
+        viewport={{ once: true, amount: 0.1 }}
         transition={{ duration: 0.95, delay, ease: EASE }}
       >
         {children}
