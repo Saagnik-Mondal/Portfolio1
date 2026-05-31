@@ -216,7 +216,7 @@ export default function Projects() {
           data-cursor="hover"
           className="mt-12 inline-flex items-center gap-2 font-semibold text-ink-soft transition-colors hover:text-accent"
         >
-          See all 21 repositories on GitHub
+          Explore more work on GitHub
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7m10 0v10" />
           </svg>

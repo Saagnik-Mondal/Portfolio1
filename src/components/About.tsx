@@ -4,10 +4,10 @@ import { useInView } from '../hooks/useInView'
 import { Reveal, RevealLine } from './Reveal'
 
 const highlights = [
-  { target: 21, suffix: '+', label: 'Repositories' },
-  { target: 50, suffix: '★', label: 'Stars · best project' },
-  { target: 4, suffix: '', label: 'AI/ML case studies' },
+  { target: 4, suffix: '', label: 'AI/ML projects shipped end-to-end' },
   { target: 3, suffix: '+', label: 'Years building ML' },
+  { target: 2, suffix: '', label: 'Healthcare-AI systems built' },
+  { target: 4, suffix: '', label: 'Domains — vision, NLP, health, game AI' },
 ]
 
 function CountUp({ target, suffix, active }: { target: number; suffix: string; active: boolean }) {
