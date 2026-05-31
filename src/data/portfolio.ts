@@ -8,7 +8,7 @@ export const projects = [
     stars: 50,
     category: 'Computer Vision',
     categoryColor: '#22d3ee',
-    link: 'https://github.com/Saagnik-Mondal/Chest-X-Ray-Images-Pneumonia',
+    link: 'https://github.com/Saagnik-Mondal/Chest-X-Ray-Images-Pneumonia-',
     featured: true,
     year: '2024',
     problem:
