@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import Magnetic from './Magnetic'
-import Marquee from './Marquee'
 import { useSmoothScroll } from '../lib/smooth-scroll'
 
 const EASE = [0.22, 1, 0.36, 1] as const
@@ -139,16 +138,14 @@ export default function Hero() {
             </motion.svg>
             Scroll
           </button>
-          <div className="min-w-0 flex-1">
-            <Marquee>
-              {FOCUS.map((f) => (
-                <span key={f} className="flex items-center font-display text-2xl font-semibold text-ink/70 md:text-3xl">
-                  <span className="mx-6">{f}</span>
-                  <span className="text-ember">✦</span>
-                </span>
-              ))}
-            </Marquee>
-          </div>
+          <ul className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-soft">
+            {FOCUS.map((f, i) => (
+              <li key={f} className="flex items-center gap-4">
+                {i > 0 && <span className="text-ember/60" aria-hidden>/</span>}
+                {f}
+              </li>
+            ))}
+          </ul>
         </div>
       </motion.div>
     </section>

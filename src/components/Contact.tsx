@@ -2,10 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from '../hooks/useInView'
 import { RevealLine } from './Reveal'
-import Marquee from './Marquee'
 
 const EASE = [0.22, 1, 0.36, 1] as const
-const EMAIL = 'saagnikmondal@gmail.com'
+const EMAIL = 'sm2744@cse.jgec.ac.in'
 
 /** Web3Forms access key — set VITE_WEB3FORMS_KEY in .env, or replace the
  *  fallback string below with your key from https://web3forms.com (free). */
@@ -442,16 +441,14 @@ export default function Contact() {
         </motion.div>
       </div>
 
-      {/* giant marquee footer */}
-      <div className="mt-14 border-t border-ink/12 py-8">
-        <Marquee>
-          <span className="display flex items-center text-[12vw] leading-none text-ink/10">
-            <span className="mx-8">Saagnik Mondal</span>
-            <span className="mx-8 text-accent/20">—</span>
-            <span className="mx-8">AI / ML Engineer</span>
-            <span className="mx-8 text-accent/20">—</span>
-          </span>
-        </Marquee>
+      {/* static sign-off */}
+      <div className="mx-auto mt-16 max-w-[1400px] border-t border-ink/12 pt-10">
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft">
+          AI / ML Engineer · Open to roles
+        </p>
+        <p className="display mt-3 leading-[0.88] text-ink/[0.12] text-[clamp(2.75rem,12vw,10rem)]">
+          Saagnik Mondal
+        </p>
       </div>
 
       <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-2 pb-10 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-soft sm:flex-row">

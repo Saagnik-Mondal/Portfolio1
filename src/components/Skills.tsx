@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { motion, AnimatePresence, useMotionValue, useMotionTemplate } from 'framer-motion'
 import { skills } from '../data/portfolio'
 import { RevealLine } from './Reveal'
-import Marquee from './Marquee'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -175,16 +174,16 @@ export default function Skills() {
           <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-soft">
             Also familiar with
           </p>
-          <Marquee reverse>
+          <div className="flex flex-wrap gap-2.5">
             {ALSO.map((tech) => (
               <span
                 key={tech}
-                className="mx-3 rounded-full border border-ink/12 px-5 py-2 text-sm font-medium text-ink-soft"
+                className="rounded-full border border-ink/12 px-4 py-1.5 text-sm font-medium text-ink-soft transition-colors hover:border-ink/25 hover:text-ink"
               >
                 {tech}
               </span>
             ))}
-          </Marquee>
+          </div>
         </div>
       </div>
     </section>
